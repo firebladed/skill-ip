@@ -97,9 +97,9 @@ class IPSkill(MycroftSkill):
     @intent_handler(IntentBuilder("IPIntent").require("query").require("IP"))
     def handle_query_IP(self, message):
         if self.settings.get('default_ipv6', False):
-            handle_query_IPv6(message):
+            handle_query_IPv6(message)
         else:
-            handle_query_IPv4(message): 
+            handle_query_IPv4(message) 
 
 
     @intent_handler(IntentBuilder("IPV4Intent").require("query").require("IPv4"))
