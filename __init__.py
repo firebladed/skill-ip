@@ -168,7 +168,7 @@ class IPSkill(MycroftSkill):
                 ip = addr[iface]
                 self.enclosure.mouth_text(ip)
                 self.gui_show(ip)
-                ip_spoken = ip.replace(":", " " + colon + " ")
+                ip_spoken = ip[0].replace(":", " " + colon + " ")
                 self.speak_dialog("my address on X is Y",
                                   {'interface': iface, 'ip': ip_spoken})
                 time.sleep((self.LETTERS_PER_SCREEN + len(ip)) *
