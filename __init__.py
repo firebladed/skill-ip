@@ -97,14 +97,21 @@ class IPSkill(MycroftSkill):
     @intent_handler(IntentBuilder("IPIntent").require("query").require("IP"))
     def handle_query_IP(self, message):
         if self.settings.get('default_ipv6', False):
-            handle_query_IPv6(message)
+            self._handle_query_IPv6(message)
         else:
-            handle_query_IPv4(message) 
+            self._handle_query_IPv4(message) 
 
 
     @intent_handler(IntentBuilder("IPV4Intent").require("query").require("IPv4"))
-    def handle_query_IPv4(self, message):
-        addr = get_ifaces()
+    def handle_query_IP4(self, message):
+        self.handle_query_IPv4(message) 
+    @intent_handler(IntentBuilder("IPV6Intent").require("query").require("IPv6"))
+    def handle_query_IP6(self, message):
+        self.handle_query_IPv6(message)
+    
+    
+    def _handle_query_IPv4(self, message: Message):
+        addr = get_ifaces4()
         dot = self.dialog_renderer.render("dot")
 
         if len(addr) == 0:
@@ -136,9 +143,9 @@ class IPSkill(MycroftSkill):
         self.enclosure.activate_mouth_events()
         self.enclosure.mouth_reset()        
         
-    @intent_handler(IntentBuilder("IPV6Intent").require("query").require("IPv6"))
-    def handle_query_IPv6(self, message):
-        addr = get_ifaces()
+    
+    def _handle_query_IPv6(self, message: Message):
+        addr = get_ifaces6()
         dot = self.dialog_renderer.render("dot")
 
         if len(addr) == 0:
@@ -171,7 +178,7 @@ class IPSkill(MycroftSkill):
         self.enclosure.mouth_reset()        
         
     def handle_SSID_query(self, message):
-        addr = get_ifaces()
+        addr = get_ifaces4()
         ssid = None
         if len(addr) == 0:
             self.speak_dialog("no network connection")
@@ -197,7 +204,7 @@ class IPSkill(MycroftSkill):
                                      .require("last").require("digits"))
     def handle_query_last_part_IP(self, message):
         ip = None
-        addr = get_ifaces()
+        addr = get_ifaces4()
         if len(addr) == 0:
             self.speak_dialog("no network connection")
             return
