@@ -20,6 +20,7 @@ from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
 import mycroft.audio
 from subprocess import check_output, CalledProcessError
+from mycroft.messagebus.message import Message
     
 def get_ifaces4(ignore_list=None):
     """ Build a dict with device names and their associated ip address.
