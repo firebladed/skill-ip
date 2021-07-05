@@ -105,10 +105,10 @@ class IPSkill(MycroftSkill):
 
     @intent_handler(IntentBuilder("IPV4Intent").require("query").require("IPv4"))
     def handle_query_IP4(self, message):
-        self.handle_query_IPv4(message) 
+        self._handle_query_IPv4(message) 
     @intent_handler(IntentBuilder("IPV6Intent").require("query").require("IPv6"))
     def handle_query_IP6(self, message):
-        self.handle_query_IPv6(message)
+        self._handle_query_IPv6(message)
     
     
     def _handle_query_IPv4(self, message: Message):
