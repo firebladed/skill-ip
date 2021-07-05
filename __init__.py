@@ -20,9 +20,8 @@ from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
 import mycroft.audio
 from subprocess import check_output, CalledProcessError
-
-
-def get_ifaces(ignore_list=None):
+    
+def get_ifaces4(ignore_list=None):
     """ Build a dict with device names and their associated ip address.
 
     Arguments:
@@ -38,6 +37,27 @@ def get_ifaces(ignore_list=None):
         if iface.ips and iface.name not in ignore_list:
             for addr in iface.ips:
                 if addr.is_IPv4:
+                    res[iface.nice_name] = addr.ip
+                    break
+    return res
+
+
+def get_ifaces6(ignore_list=None):
+    """ Build a dict with device names and their associated ip address.
+
+    Arguments:
+        ignore_list(list): list of devices to ignore. Defaults to "lo"
+
+    Returns:
+        (dict) with device names as keys and ip addresses as value.
+    """
+    ignore_list = ignore_list or ['lo']
+    res = {}
+    for iface in get_adapters():
+        # ignore "lo" (the local loopback)
+        if iface.ips and iface.name not in ignore_list:
+            for addr in iface.ips:
+                if addr.is_IPv6:
                     res[iface.nice_name] = addr.ip
                     break
     return res
@@ -73,8 +93,17 @@ class IPSkill(MycroftSkill):
             self.register_intent_file("what.ssid.intent",
                                       self.handle_SSID_query)
 
+            
     @intent_handler(IntentBuilder("IPIntent").require("query").require("IP"))
     def handle_query_IP(self, message):
+        if self.settings.get('default_ipv6', False):
+            handle_query_IPv6(message):
+        else:
+            handle_query_IPv4(message): 
+
+
+    @intent_handler(IntentBuilder("IPV4Intent").require("query").require("IPv4"))
+    def handle_query_IPv4(self, message):
         addr = get_ifaces()
         dot = self.dialog_renderer.render("dot")
 
@@ -105,8 +134,42 @@ class IPSkill(MycroftSkill):
 
         mycroft.audio.wait_while_speaking()
         self.enclosure.activate_mouth_events()
-        self.enclosure.mouth_reset()
+        self.enclosure.mouth_reset()        
+        
+    @intent_handler(IntentBuilder("IPV6Intent").require("query").require("IPv6"))
+    def handle_query_IPv6(self, message):
+        addr = get_ifaces()
+        dot = self.dialog_renderer.render("dot")
 
+        if len(addr) == 0:
+            self.speak_dialog("no network connection")
+            return
+        elif len(addr) == 1:
+            self.enclosure.deactivate_mouth_events()
+            iface, ip = addr.popitem()
+            self.enclosure.mouth_text(ip)
+            self.gui_show(ip)
+            ip_spoken = ip.replace(":", " "+colon+" ")
+            self.speak_dialog("my address is",
+                              {'ip': ip_spoken})
+            time.sleep((self.LETTERS_PER_SCREEN + len(ip)) *
+                       self.SEC_PER_LETTER)
+        else:
+            self.enclosure.deactivate_mouth_events()
+            for iface in addr:
+                ip = addr[iface]
+                self.enclosure.mouth_text(ip)
+                self.gui_show(ip)
+                ip_spoken = ip.replace(":", " " + colon + " ")
+                self.speak_dialog("my address on X is Y",
+                                  {'interface': iface, 'ip': ip_spoken})
+                time.sleep((self.LETTERS_PER_SCREEN + len(ip)) *
+                           self.SEC_PER_LETTER)
+
+        mycroft.audio.wait_while_speaking()
+        self.enclosure.activate_mouth_events()
+        self.enclosure.mouth_reset()        
+        
     def handle_SSID_query(self, message):
         addr = get_ifaces()
         ssid = None
