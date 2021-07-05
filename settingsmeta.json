@@ -1,0 +1,17 @@
+{
+    "skillMetadata": {
+        "sections": [
+            {
+                "name": "Default IPv6",
+                "fields": [
+                    {
+                        "name": "default_ipv6",
+                        "type": "checkbox",
+                        "label": "Use IPv6 as Default",
+                        "value": "false"
+                    }
+                ]
+            }
+        ]
+    }
+}
