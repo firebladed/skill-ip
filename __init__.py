@@ -114,6 +114,7 @@ class IPSkill(MycroftSkill):
     def _handle_query_IPv4(self, message: Message):
         addr = get_ifaces4()
         dot = self.dialog_renderer.render("dot")
+        colon = self.dialog_renderer.render("colon")
 
         if len(addr) == 0:
             self.speak_dialog("no network connection")
@@ -148,6 +149,7 @@ class IPSkill(MycroftSkill):
     def _handle_query_IPv6(self, message: Message):
         addr = get_ifaces6()
         dot = self.dialog_renderer.render("dot")
+        colon = self.dialog_renderer.render("colon")        
 
         if len(addr) == 0:
             self.speak_dialog("no network connection")
