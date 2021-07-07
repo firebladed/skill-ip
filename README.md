@@ -4,6 +4,9 @@ Network connection information
 ## About 
 Retrieve the [IP address](https://en.wikipedia.org/wiki/IP_address), also known as the "network address" of the Device and respond verbally to the user, and if the Device supports it, display the IP address. 
 
+The type of address reported when sayiing "IP" depends on the default type setting, which is initally IPv4
+Ipv4 and Ipv6 addresses can be requested specifically by saying IPv4 or IPv6 respectivly  
+
 ## Examples 
 * "What's your network address?"
 * "What's your IP address?"
